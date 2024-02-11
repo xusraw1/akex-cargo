@@ -6,5 +6,7 @@
     {% csrf_token %}
     {{ form|crispy }}
     <button type="submit" class="btn btn-outline-success">Yaratish</button>
+    <hr>
+    <a href="{% url 'login' %}">Tizimga kirish</a>
 </form>
 {% endblock %}
