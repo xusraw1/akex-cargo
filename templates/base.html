@@ -12,10 +12,11 @@
     <title>AkEx Cargo</title>
 </head>
 <body>
-
 {% include 'header.html' %}
-
 <div class="container">
+    {% if messages %}
+    {% include 'message.html' %}
+    {% endif %}
     {% block content %}
 
     {% endblock %}

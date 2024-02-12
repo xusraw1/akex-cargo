@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile
 from .forms import ProfileCreateForm, LoginForm
 from django.views import View
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
+from django.contrib import messages
 
 
 class CreateProfileView(View):
@@ -34,5 +35,18 @@ class LoginPageView(View):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return HttpResponse('Oh, you lucky man!')
+                messages.success(request, 'Hush kelibsiz' + ' ' + username)
+                return redirect('profile', username)
             return HttpResponse('Not found!!!!')
+
+
+class LogoutPageView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('login')
+
+
+class ProfilePageView(View):
+    def get(self, request, username):
+        profile = get_object_or_404(Profile, username=username)
+        return render(request, 'users/profile.html', context={'profile': profile})
