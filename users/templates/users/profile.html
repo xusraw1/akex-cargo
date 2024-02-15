@@ -71,6 +71,7 @@
                                 <p class="text-muted mb-0">{{ profile.email }}</p>
                             </div>
                         </div>
+                        {% if profile.phone %}
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
@@ -80,6 +81,8 @@
                                 <p class="text-muted mb-0">{{ profile.phone }}</p>
                             </div>
                         </div>
+                        {% endif %}
+                        {% if profile.akex_id %}
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
@@ -89,7 +92,8 @@
                                 <p class="text-muted mb-0">{{ profile.akex_id }}</p>
                             </div>
                         </div>
-                        <hr>
+                        {% endif %}
+                        {% if profile.address %}
                         <div class="row">
                             <div class="col-sm-3">
                                 <p class="mb-0">Uy-manzil</p>
@@ -98,8 +102,32 @@
                                 <p class="text-muted mb-0">{{ profile.address }}</p>
                             </div>
                         </div>
+                        {% endif %}
+                        {% if profile.pinfl %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">PINFL</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{ profile.pinfl }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <hr>
+                        {% if profile.sp %}
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Seriya Raqam</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{ profile.sp }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
+                <a href="{% url 'profile_change_form' profile.username %}"
+                   class="btn btn-outline-warning">Tahrirlash</a>
             </div>
         </div>
     </div>

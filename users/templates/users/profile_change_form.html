@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h2>Profil tahrirlash</h2>
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Tahrirlash</button>
+    <a href="{{ request.META.HTTP_REFERER }}">Orqaga</a>
+</form>
+
+{% endblock %}
