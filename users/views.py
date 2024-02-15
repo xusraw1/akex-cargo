@@ -55,22 +55,34 @@ class LogoutPageView(LoginRequiredMixin, View):
 
 class ProfilePageView(LoginRequiredMixin, View):
     def get(self, request, username):
-        profile = get_object_or_404(Profile, username=username)
-        return render(request, 'users/profile.html', context={'profile': profile})
+        if request.user.username == username:
+            profile = get_object_or_404(Profile, username=username)
+            return render(request, 'users/profile.html', context={'profile': profile})
+        else:
+            messages.info(request, 'Hatolik: Siz bu profilga ruhsat olmagansiz!')
+            return redirect('/')
 
 
 class ProfileChangePageView(LoginRequiredMixin, View):
     def get(self, request, username):
-        profile = get_object_or_404(Profile, username=username)
-        form = ProfileChangeForm(instance=profile)
-        return render(request, 'users/profile_change_form.html', context={'form': form})
+        if request.user.username == username:
+            profile = get_object_or_404(Profile, username=username)
+            form = ProfileChangeForm(instance=profile)
+            return render(request, 'users/profile_change_form.html', context={'form': form})
+        else:
+            messages.info(request, 'Hatolik: Siz bu profilga ruhsat olmagansiz!')
+            return redirect('/')
 
     def post(self, request, username):
-        profile = get_object_or_404(Profile, username=username)
-        form = ProfileChangeForm(data=request.POST, files=request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Siz profilingizni tahrirladiz!')
-            return redirect('profile', username)
-        return HttpResponse("<h1>HATOLIK YUZ BERDI, QAYTA URINING</h1><hr>\n"
-                            "<a href='/'>BOSH SAHIFA</a>")
+        if request.user.username == username:
+            profile = get_object_or_404(Profile, username=username)
+            form = ProfileChangeForm(data=request.POST, files=request.FILES, instance=profile)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Siz profilingizni tahrirladiz!')
+                return redirect('profile', username)
+            return HttpResponse("<h1>HATOLIK YUZ BERDI, QAYTA URINING</h1><hr>\n"
+                                "<a href='/'>BOSH SAHIFA</a>")
+        else:
+            messages.info(request, 'Hatolik: Siz bu profilga ruhsat olmagansiz!')
+            return redirect('/')

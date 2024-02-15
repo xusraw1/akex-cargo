@@ -15,8 +15,6 @@ class Profile(models.Model):
     telegram = models.URLField(verbose_name='Telegram', null=True, blank=True)
     akex_id = models.CharField(blank=True, null=True, verbose_name='KARGO ID', max_length=15)
     phone = models.CharField(max_length=15, verbose_name='Telefon Raqam')
-    pinfl = models.CharField(max_length=14, null=True, verbose_name='PINFL Raqam')
-    sp = models.CharField(max_length=7, blank=True, verbose_name='Pasport Seriya')
     avatar = models.ImageField(upload_to='users/avatars/', default='avatar.png', verbose_name='Avatar')
     created = models.DateTimeField(auto_now_add=True, blank=True)
     updated = models.DateField(default=timezone.now, blank=True, null=True)
