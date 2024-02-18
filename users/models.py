@@ -23,6 +23,24 @@ class Profile(models.Model):
         return self.username
 
 
+class AkexId(models.Model):
+    username = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    pinfl = models.CharField(max_length=14)
+    sp = models.CharField(max_length=7)
+    image = models.ImageField(upload_to='akex_id/passports/')
+    status = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return self.username.first_name + ' ' + self.username.last_name
+
+    class Meta:
+        verbose_name = 'AkexID'
+        verbose_name_plural = 'AkexID'
+        ordering = ('-created', )
+
+
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:

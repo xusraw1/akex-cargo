@@ -129,8 +129,8 @@
                 </div>
                 <a href="{% url 'profile_change_form' profile.username %}"
                    class="btn btn-warning">Tahrirlash</a>
-                {% if not profile.akex_id %}
-                <a href="#" class="btn btn-secondary">ID OLISH</a>
+                {% if not profile.akex_id and id_button %}
+                <a href="{% url 'akex_id' %}" class="btn btn-secondary">ID OLISH</a>
                 {% endif %}
             </div>
         </div>

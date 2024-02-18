@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Profile
-from .forms import ProfileCreateForm, LoginForm, ProfileChangeForm
+from .models import Profile, AkexId
+from .forms import ProfileCreateForm, LoginForm, ProfileChangeForm, AkexIdForm
 from django.views import View
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
@@ -55,9 +55,17 @@ class LogoutPageView(LoginRequiredMixin, View):
 
 class ProfilePageView(LoginRequiredMixin, View):
     def get(self, request, username):
+        id_button = True
         if request.user.username == username:
             profile = get_object_or_404(Profile, username=username)
-            return render(request, 'users/profile.html', context={'profile': profile})
+            try:
+                akex_id = AkexId.objects.get(username__username=username)
+                if akex_id:
+                    id_button = False
+            except:
+                None
+            return render(request, 'users/profile.html', context={'profile': profile,
+                                                                  'id_button': id_button})
         else:
             messages.info(request, 'Hatolik: Siz bu profilga ruhsat olmagansiz!')
             return redirect('/')
@@ -86,3 +94,22 @@ class ProfileChangePageView(LoginRequiredMixin, View):
         else:
             messages.info(request, 'Hatolik: Siz bu profilga ruhsat olmagansiz!')
             return redirect('/')
+
+
+class AkexIdPageView(View):
+    def get(self, request):
+        form = AkexIdForm()
+        return render(request, 'users/akex_id.html', context={'form': form})
+
+    def post(self, request):
+        form = AkexIdForm(request.POST, files=request.FILES)
+        if form.is_valid():
+            profile = get_object_or_404(Profile, username=request.user)
+            akex_id = form.save(commit=False)
+            akex_id.username = profile
+            akex_id.save()
+            messages.success(request, 'Arizangiz qabul qilindi, 24 soat ichida ko`rib chiqiladi!')
+            return redirect('profile', profile)
+        else:
+            messages.error(request, 'Iltimos formani to`gri to`ldiring!')
+            return render(request, 'users/akex_id.html', context={'form': form})
