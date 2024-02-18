@@ -103,35 +103,40 @@
                             </div>
                         </div>
                         {% endif %}
-<!--                        {% if profile.pinfl %}-->
-<!--                        <hr>-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-sm-3">-->
-<!--                                <p class="mb-0">PINFL</p>-->
-<!--                            </div>-->
-<!--                            <div class="col-sm-9">-->
-<!--                                <p class="text-muted mb-0">{{ profile.pinfl }}</p>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        {% endif %}-->
-<!--                        <hr>-->
-<!--                        {% if profile.sp %}-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-sm-3">-->
-<!--                                <p class="mb-0">Seriya Raqam</p>-->
-<!--                            </div>-->
-<!--                            <div class="col-sm-9">-->
-<!--                                <p class="text-muted mb-0">{{ profile.sp }}</p>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        {% endif %}-->
+                        <!--                        {% if profile.pinfl %}-->
+                        <!--                        <hr>-->
+                        <!--                        <div class="row">-->
+                        <!--                            <div class="col-sm-3">-->
+                        <!--                                <p class="mb-0">PINFL</p>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-sm-9">-->
+                        <!--                                <p class="text-muted mb-0">{{ profile.pinfl }}</p>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                        <!--                        {% endif %}-->
+                        <!--                        <hr>-->
+                        <!--                        {% if profile.sp %}-->
+                        <!--                        <div class="row">-->
+                        <!--                            <div class="col-sm-3">-->
+                        <!--                                <p class="mb-0">Seriya Raqam</p>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-sm-9">-->
+                        <!--                                <p class="text-muted mb-0">{{ profile.sp }}</p>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                        <!--                        {% endif %}-->
                     </div>
                 </div>
-                <a href="{% url 'profile_change_form' profile.username %}"
-                   class="btn btn-warning">Tahrirlash</a>
-                {% if not profile.akex_id and id_button %}
-                <a href="{% url 'akex_id' %}" class="btn btn-secondary">ID OLISH</a>
-                {% endif %}
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                    <a href="{% url 'profile_change_form' profile.username %}"
+                       class="btn btn-outline-primary">Tahrirlash</a>
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'id_berish' %}" class="btn btn-outline-secondary">ID SO`ROVLAR</a>
+                    {% endif %}
+                    {% if not profile.akex_id and id_button and not request.user.is_superuser %}
+                    <a href="{% url 'akex_id' %}" class="btn btn-secondary">ID OLISH</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

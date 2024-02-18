@@ -8,4 +8,6 @@ urlpatterns = [
     path('profile/<str:username>/', ProfilePageView.as_view(), name='profile'),
     path('profile-change/<str:username>/', ProfileChangePageView.as_view(), name='profile_change_form'),
     path('akex-id/', AkexIdPageView.as_view(), name='akex_id'),
+    path('akex-id-berish/', SuperUser.as_view(), name='id_berish'),
+    path('akex-id-chek/<str:username>/', IdCheck.as_view(), name='id_chek'),
 ]

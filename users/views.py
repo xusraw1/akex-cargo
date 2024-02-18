@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile, AkexId
 from .forms import ProfileCreateForm, LoginForm, ProfileChangeForm, AkexIdForm
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 class CreateProfileView(View):
@@ -96,7 +96,7 @@ class ProfileChangePageView(LoginRequiredMixin, View):
             return redirect('/')
 
 
-class AkexIdPageView(View):
+class AkexIdPageView(LoginRequiredMixin, View):
     def get(self, request):
         form = AkexIdForm()
         return render(request, 'users/akex_id.html', context={'form': form})
@@ -113,3 +113,47 @@ class AkexIdPageView(View):
         else:
             messages.error(request, 'Iltimos formani to`gri to`ldiring!')
             return render(request, 'users/akex_id.html', context={'form': form})
+
+
+class SuperUser(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        return HttpResponseForbidden("Faqatgina SUPERUSER kiraoladi!")
+
+    def get(self, request):
+        akex_users = AkexId.objects.filter(status=False)
+        context = {'akex_users': akex_users}
+        return render(request, 'users/akex_id_list.html', context)
+
+
+class IdCheck(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        return HttpResponseForbidden("Faqatgina SUPERUSER kiraoladi!")
+
+    def get(self, request, username):
+        akex = get_object_or_404(AkexId, username__username=username)
+        context = {'akex': akex}
+        return render(request, 'users/akex_id_check.html', context)
+
+    def post(self, request, username):
+        text = request.POST.get('text')
+        print(text)
+        return HttpResponse('Hello, world!')
+        # accept = request.POST.get('accept')
+        # rejected = request.POST.get('reject')
+        # id = request.POST.get('id')
+        # if accept:
+        #     profile = get_object_or_404(Profile, username=request.user)
+        #     profile.akex_id = id
+        #     messages.success(request, 'ID berildi!')
+        #     return redirect('id_berish')
+        # elif rejected:
+        #     akex = get_object_or_404(AkexId, username__username=request.user)
+        #     akex.delete()
+        #     messages.success(request, 'Qayta topshirish yangilandi!')
+        #     return redirect('id_berish')

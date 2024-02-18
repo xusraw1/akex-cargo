@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Username</th>
+            <th scope="col">Ism</th>
+            <th scope="col">Familiya</th>
+            <th scope="col">Sana</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for users in akex_users %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><b><a href="{% url 'id_chek' users.username %}">{{ users.username }}</a></b></td>
+            <td>{{ users.username.first_name }}</td>
+            <td>{{ users.username.last_name }}</td>
+            <td>{{ users.created }}</td>
+        </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+
+</div>
+{% endblock %}
