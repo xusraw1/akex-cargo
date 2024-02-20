@@ -10,4 +10,5 @@ urlpatterns = [
     path('akex-id/', AkexIdPageView.as_view(), name='akex_id'),
     path('akex-id-berish/', SuperUser.as_view(), name='id_berish'),
     path('akex-id-chek/<str:username>/', IdCheck.as_view(), name='id_chek'),
+    path('akex-id-change/<str:username>/', IdChange.as_view(), name='id_change'),
 ]

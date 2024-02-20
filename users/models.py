@@ -10,10 +10,11 @@ class Profile(models.Model):
     username = models.CharField(max_length=50, verbose_name='Username', unique=True)
     first_name = models.CharField(max_length=50, verbose_name='Ism')
     last_name = models.CharField(max_length=50, verbose_name='Familiya')
-    address = models.TextField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True, verbose_name='Uy manzil')
     email = models.EmailField(verbose_name='Email Manzil')
     telegram = models.URLField(verbose_name='Telegram', null=True, blank=True)
     akex_id = models.CharField(blank=True, null=True, verbose_name='KARGO ID', max_length=15)
+    akex_address = models.CharField(blank=True, null=True, verbose_name='Xitoy Manzil', max_length=200)
     phone = models.CharField(max_length=15, verbose_name='Telefon Raqam')
     avatar = models.ImageField(upload_to='users/avatars/', default='avatar.png', verbose_name='Avatar')
     created = models.DateTimeField(auto_now_add=True, blank=True)
@@ -38,7 +39,7 @@ class AkexId(models.Model):
     class Meta:
         verbose_name = 'AkexID'
         verbose_name_plural = 'AkexID'
-        ordering = ('-created', )
+        ordering = ('-created',)
 
 
 @receiver(post_save, sender=User)

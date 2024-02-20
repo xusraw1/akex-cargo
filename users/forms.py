@@ -18,7 +18,7 @@ class LoginForm(forms.Form):
 class ProfileChangeForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'telegram', 'phone', 'avatar']
+        fields = ['first_name', 'last_name', 'telegram', 'phone', 'avatar', 'address']
 
 
 class AkexIdForm(forms.ModelForm):

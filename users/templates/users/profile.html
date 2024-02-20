@@ -24,7 +24,7 @@
                              class="rounded-circle img-fluid" style="width: 150px;">
                         <h5 class="my-3">{{ profile.first_name }} {{ profile.last_name }}</h5>
                         {% if profile.akex_id %}
-                        <p class="text-muted mb-1">{{ profile.akex_id }}</p>
+                        <p class="text-muted mb-1">AKEX ID: <b>{{ profile.akex_id }}</b></p>
                         {% else %}
                         <p class="text-muted mb-1">ID yo'q</p>
                         {% endif %}
@@ -42,7 +42,7 @@
                             {% endif %}
                             {% if profile.phone %}
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <i class="fab fa-github fa-lg" style="color: #333333;"></i>
+                                <i class="fab fa-github fa-lg" style="color: #33333;"></i>
                                 <p class="mb-0">{{ profile.phone }}</p>
                             </li>
                             {% endif %}
@@ -62,6 +62,7 @@
                                 <p class="text-muted mb-0">{{ profile.last_name }} {{ profile.first_name }}</p>
                             </div>
                         </div>
+                        {% if profile.email %}
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
@@ -71,6 +72,7 @@
                                 <p class="text-muted mb-0">{{ profile.email }}</p>
                             </div>
                         </div>
+                        {% endif %}
                         {% if profile.phone %}
                         <hr>
                         <div class="row">
@@ -82,14 +84,28 @@
                             </div>
                         </div>
                         {% endif %}
-                        {% if profile.akex_id %}
+                        {% if profile.akex_id and profile.akex_address %}
                         <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">AkEx-ID</p>
+                        <p>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseExample" aria-expanded="false"
+                                    aria-controls="collapseExample">
+                                ID
+                            </button>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseExample1" aria-expanded="false"
+                                    aria-controls="collapseExample">
+                                MANZIL
+                            </button>
+                        </p>
+                        <div class="collapse" id="collapseExample">
+                            <div class="card card-body">
+                                <b>{{ profile.akex_id }}</b>
                             </div>
-                            <div class="col-sm-9">
-                                <p class="text-muted mb-0">{{ profile.akex_id }}</p>
+                        </div>
+                        <div class="collapse" id="collapseExample1">
+                            <div class="card card-body">
+                                <b>{{ profile.akex_address }}</b>
                             </div>
                         </div>
                         {% endif %}

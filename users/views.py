@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile, AkexId
 from .forms import ProfileCreateForm, LoginForm, ProfileChangeForm, AkexIdForm
 from django.views import View
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.paginator import Paginator
 
 
 class CreateProfileView(View):
@@ -123,8 +124,11 @@ class SuperUser(UserPassesTestMixin, View):
         return HttpResponseForbidden("Faqatgina SUPERUSER kiraoladi!")
 
     def get(self, request):
-        akex_users = AkexId.objects.filter(status=False)
-        context = {'akex_users': akex_users}
+        given = request.GET.get('given')
+        requests = request.GET.get('requests')
+        akex_users = AkexId.objects.filter(status=False) if requests else None
+        profile = Profile.objects.filter(akex_id__isnull=False) if given else None
+        context = {'akex_users': akex_users, 'profile': profile}
         return render(request, 'users/akex_id_list.html', context)
 
 
@@ -141,19 +145,68 @@ class IdCheck(UserPassesTestMixin, View):
         return render(request, 'users/akex_id_check.html', context)
 
     def post(self, request, username):
-        text = request.POST.get('text')
+        accept = request.POST.get('accept')
+        rejected = request.POST.get('reject')
+        text = request.POST.get('id')
+        address = request.POST.get('address')
+        user = request.POST.get('username')
         print(text)
-        return HttpResponse('Hello, world!')
-        # accept = request.POST.get('accept')
-        # rejected = request.POST.get('reject')
-        # id = request.POST.get('id')
-        # if accept:
-        #     profile = get_object_or_404(Profile, username=request.user)
-        #     profile.akex_id = id
-        #     messages.success(request, 'ID berildi!')
-        #     return redirect('id_berish')
-        # elif rejected:
-        #     akex = get_object_or_404(AkexId, username__username=request.user)
-        #     akex.delete()
-        #     messages.success(request, 'Qayta topshirish yangilandi!')
-        #     return redirect('id_berish')
+        if accept != None:
+            profile = get_object_or_404(Profile, username=user)
+            profile.akex_id = text
+            profile.akex_address = address
+            akex = get_object_or_404(AkexId, username__username=user)
+            akex.status = True
+            akex.save()
+            profile.save()
+            messages.success(request, 'ID berildi!')
+            return redirect('id_berish')
+        elif rejected != None:
+            akex = get_object_or_404(AkexId, username__username=user)
+            akex.delete()
+            messages.success(request, 'Qayta topshirish yangilandi!')
+            return redirect('id_berish')
+        else:
+            return HttpResponseBadRequest("Invalid request")
+
+
+class IdChange(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        return HttpResponseForbidden("Faqatgina SUPERUSER kiraoladi!")
+
+    def get(self, request, username):
+        akex = AkexId.objects.select_related('username').get(username__username=username)
+        context = {'akex': akex}
+        return render(request, 'users/akex_id_change.html', context)
+
+    def post(self, request, username):
+        accept = request.POST.get('accept')
+        rejected = request.POST.get('reject')
+        text = request.POST.get('id')
+        address = request.POST.get('address')
+        user = request.POST.get('username')
+        print(text)
+        if accept != None:
+            profile = get_object_or_404(Profile, username=user)
+            profile.akex_id = text
+            profile.akex_address = address
+            akex = get_object_or_404(AkexId, username__username=user)
+            akex.status = True
+            akex.save()
+            profile.save()
+            messages.info(request, 'ID muvoffaqiyatli o`zgartirildi!')
+            return redirect('id_berish')
+        elif rejected != None:
+            akex = get_object_or_404(AkexId, username__username=user)
+            profile = get_object_or_404(Profile, username=user)
+            profile.akex_id = ''
+            profile.akex_address = ''
+            akex.delete()
+            profile.save()
+            messages.warning(request, 'Uchirib tashlandi!')
+            return redirect('id_berish')
+        else:
+            return HttpResponseBadRequest("Invalid request")

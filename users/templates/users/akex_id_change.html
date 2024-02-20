@@ -5,7 +5,8 @@
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <div class="rounded p-2 bg-primary text-white">
-                <h2 class="text-center">Ariza uchun yuborilgan malumotlar</h2>
+                <h2 class="text-center">{{ akex.username.first_name.title }} {{ akex.username.last_name.title }}ning
+                    malumotlari!</h2>
             </div>
         </div>
     </div>
@@ -18,6 +19,7 @@
         <th scope="col">PINFL</th>
         <th scope="col">Seriya Raqam</th>
         <th scope="col">Pasport</th>
+        <th scope="col">ID</th>
     </tr>
     </thead>
     <tbody>
@@ -26,9 +28,11 @@
         <td>{{ akex.pinfl }}</td>
         <td>{{ akex.sp }}</td>
         <td><a href="{{ akex.image.url }}">PASSPORT</a></td>
+        <td>{{ akex.username.akex_id }}</td>
     </tr>
     </tbody>
 </table>
+<h2>ID va ADDRES o`zgartirish</h2>
 <form action="" method="post">
     {% csrf_token %}
     <div class="form-floating">
@@ -41,8 +45,8 @@
         <input type="text" name="username" value="{{ akex.username }}" hidden="hidden">
         <input type="text" class="form-control" placeholder="ID RAQAMI" name="id" aria-label="Recipient's username"
                aria-describedby="button-addon2">
-        <button class="btn btn-outline-success" type="submit" id="button-addon2" name="accept">BERISH</button>
-        <button class="btn btn-danger" type="submit" name="reject">QAYTA ARIZA TOPSHIRISH</button>
+        <button class="btn btn-outline-success" type="submit" id="button-addon2" name="accept">O`ZGARTIRISH</button>
+        <button class="btn btn-danger" type="submit" name="reject">UCHIRIB TASHLASH</button>
     </div>
 </form>
 <h2></h2>
