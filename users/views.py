@@ -125,8 +125,7 @@ class SuperUser(UserPassesTestMixin, View):
 
     def get(self, request):
         given = request.GET.get('given')
-        requests = request.GET.get('requests')
-        akex_users = AkexId.objects.filter(status=False) if requests else None
+        akex_users = AkexId.objects.filter(status=False)
         profile = Profile.objects.filter(akex_id__isnull=False) if given else None
         context = {'akex_users': akex_users, 'profile': profile}
         return render(request, 'users/akex_id_list.html', context)

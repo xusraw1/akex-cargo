@@ -2,11 +2,15 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Tizimga kirish</h2>
-<form method="post"> {% csrf_token %}
+<h2 class="text-center">Tizimga kirish</h2>
+<form method="post" class="form-signin" style="max-width: 300px; margin: 0 auto;"> {% csrf_token %}
     {{ form|crispy }}
-    <button type="submit" class="btn btn-primary">Kirish</button>
+    <div style="text-align: center;">
+        <button type="submit" class="btn btn-primary">Kirish</button>
+    </div>
     <hr>
-    <a href="{% url 'create_profile' %}">Ro'yhatdan o'tish</a>
+    <div style="text-align: center;">
+        <a href="{% url 'create_profile' %}">Ro'yhatdan o'tish</a>
+    </div>
 </form>
 {% endblock %}
