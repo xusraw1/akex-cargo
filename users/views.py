@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile, AkexId
-from .forms import ProfileCreateForm, LoginForm, ProfileChangeForm, AkexIdForm
+from .forms import ProfileCreateForm, LoginForm, ProfileChangeForm, AkexIdForm, ProfileAndPasswordChangeForm
 from django.views import View
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 
 
 class CreateProfileView(View):
@@ -57,16 +58,19 @@ class LogoutPageView(LoginRequiredMixin, View):
 class ProfilePageView(LoginRequiredMixin, View):
     def get(self, request, username):
         id_button = True
+        context = {'id_button': True}
         if request.user.username == username:
             profile = get_object_or_404(Profile, username=username)
+            context['profile'] = profile
             try:
                 akex_id = AkexId.objects.get(username__username=username)
                 if akex_id:
                     id_button = False
+                    context['id_button'] = False
+                    context['akex'] = akex_id
             except:
                 None
-            return render(request, 'users/profile.html', context={'profile': profile,
-                                                                  'id_button': id_button})
+            return render(request, 'users/profile.html', context)
         else:
             messages.info(request, 'Hatolik: Siz bu profilga ruhsat olmagansiz!')
             return redirect('/')
@@ -125,7 +129,8 @@ class SuperUser(UserPassesTestMixin, View):
 
     def get(self, request):
         given = request.GET.get('given')
-        akex_users = AkexId.objects.filter(status=False)
+        requests = request.GET.get('requests')
+        akex_users = AkexId.objects.filter(status=False) if requests else None
         profile = Profile.objects.filter(akex_id__isnull=False) if given else None
         context = {'akex_users': akex_users, 'profile': profile}
         return render(request, 'users/akex_id_list.html', context)
@@ -209,3 +214,11 @@ class IdChange(UserPassesTestMixin, View):
             return redirect('id_berish')
         else:
             return HttpResponseBadRequest("Invalid request")
+
+
+class PasswordChangeView(View):
+    def get(self, request, username):
+        user = get_object_or_404(User, username=username)
+        form = ProfileAndPasswordChangeForm(instance=user)
+        context = {'form': form}
+        return render(request, 'users/registration/password_change_form.html', context)

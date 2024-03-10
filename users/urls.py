@@ -11,4 +11,7 @@ urlpatterns = [
     path('akex-id-berish/', SuperUser.as_view(), name='id_berish'),
     path('akex-id-chek/<str:username>/', IdCheck.as_view(), name='id_chek'),
     path('akex-id-change/<str:username>/', IdChange.as_view(), name='id_change'),
+
+    # password change
+    path('change-password/<str:username>/', PasswordChangeView.as_view(), name='password_change'),
 ]

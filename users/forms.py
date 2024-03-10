@@ -25,3 +25,13 @@ class AkexIdForm(forms.ModelForm):
     class Meta:
         model = AkexId
         fields = ['pinfl', 'sp', 'image']
+
+
+class ProfileAndPasswordChangeForm(forms.ModelForm):
+    old_password = forms.CharField(label='Eski parol', widget=forms.PasswordInput)
+    new_password1 = forms.CharField(label='Yangi parol', widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label='Yangi parolni tasdiqlash', widget=forms.PasswordInput)
+
+    class Meta:
+        model = Profile
+        fields = []
