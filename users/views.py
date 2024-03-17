@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
+from django.contrib.auth import update_session_auth_hash
 
 
 class CreateProfileView(View):
@@ -39,6 +40,8 @@ class LoginPageView(View):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            print(username)
+            print(password)
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -46,6 +49,8 @@ class LoginPageView(View):
                 return redirect('profile', username)
             messages.warning(request, 'Topilmadi, iltimos qayta urinib ko\'ring!')
             return render(request, 'users/login.html', context={'form': form})
+        messages.error(request, 'Formani to`ldirishda hatolik yuz berdi!')
+        return render(request, 'users/login.html', context={'form': form})
 
 
 class LogoutPageView(LoginRequiredMixin, View):
@@ -219,6 +224,29 @@ class IdChange(UserPassesTestMixin, View):
 class PasswordChangeView(View):
     def get(self, request, username):
         user = get_object_or_404(User, username=username)
-        form = ProfileAndPasswordChangeForm(instance=user)
+        form = ProfileAndPasswordChangeForm()
         context = {'form': form}
         return render(request, 'users/registration/password_change_form.html', context)
+
+    def post(self, request, username):
+        user = get_object_or_404(User, username=username)
+        form = ProfileAndPasswordChangeForm(data=request.POST)
+        if form.is_valid():
+            old_pass = form.cleaned_data['old_password']
+            if user.check_password(old_pass):
+                pass1 = form.cleaned_data['new_password1']
+                pass2 = form.cleaned_data['new_password2']
+                if pass1 == pass2:
+                    user.set_password(pass1)
+                    update_session_auth_hash(request, user)
+                    user.save()
+                    messages.success(request, 'Parol o`zgardi!')
+                    return redirect('profile', username)
+                messages.warning(request, 'Yangi parollardan biri hato kiritildi, iltimos qayta urinib ko`ring!')
+                return redirect('password_change', username)
+            else:
+                messages.warning(request, 'Eski parol hato kiritildi!')
+                return redirect('password_change', username)
+        else:
+            messages.info(request, 'Formani to`gri to`ldiring, iltimos!')
+            return redirect('password_change', username)
