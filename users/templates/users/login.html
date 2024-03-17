@@ -2,36 +2,26 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<!--<h2 class="text-center">Tizimga kirish</h2>-->
-<!--<form method="post" class="form-signin" style="max-width: 300px; margin: 0 auto;"> {% csrf_token %}-->
-<!--    {{ form|crispy }}-->
-<!--    <div style="text-align: center;">-->
-<!--        <button type="submit" class="btn btn-primary">Kirish</button>-->
-<!--    </div>-->
-<!--    <hr>-->
-<!--    <div style="text-align: center;">-->
-<!--        <a href="{% url 'create_profile' %}">Ro'yhatdan o'tish</a>-->
-<!--    </div>-->
-<!--</form>-->
 <section class="vh-500 gradient-custom">
-    <div class="container py-3 h-50">
+    <div class="container py-1 h-50">
         <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-4 col-lg-6 col-xl-5">
+            <div class="col-12 col-md-2 col-lg-3 col-xl-5">
                 <div class="card bg-primary text-white" style="border-radius: 2rem;">
-                    <div class="card-body p-5 text-center">
+                    <div class="card-body p-4 text-center">
 
                         <div class="mb-md-2 mt-md-1 pb-3">
                             <form action="" method="post"> {% csrf_token %}
-                                <h2 class="fw-bold mb-2 text-uppercase">Kirish</h2>
-                                <p class="text-dark-10 mb-5">Login va parol kiriting!</p>
+                                <h2 class="fw-bold mb-2 text-uppercase"> Tizimga kirish</h2>
                                 {{ form|crispy }}
                                 <button class="btn btn-outline-light btn-lg px-5" type="submit">Kirish</button>
                                 <hr>
-                                <p><a class="text-white" href="#!">Parolni unutdim!</a>
+                                <p><a class="text-white"
+                                      href="{% url 'reset_password' %}">Parolni unutdim!</a></p>
                             </form>
                         </div>
                         <div>
-                            <p class="mb-0">Akkaunt mavjud emasmi?<a href="#!" class="text-white-50 fw-bold"> Ro'yhatdan o'tish</a>
+                            <p class="mb-0">Akkaunt mavjud emasmi?<a href="{% url 'create_profile' %}" class="text-white-50 fw-bold"> Ro'yhatdan
+                                o'tish</a>
                             </p>
                         </div>
 

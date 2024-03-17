@@ -3,13 +3,12 @@ from .models import Profile, AkexId
 from .forms import ProfileCreateForm, LoginForm, ProfileChangeForm, AkexIdForm, ProfileAndPasswordChangeForm
 from django.views import View
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-from django.contrib.auth import update_session_auth_hash
-
+from django.contrib.auth.views import PasswordResetView
 
 class CreateProfileView(View):
     def get(self, request):
@@ -197,7 +196,6 @@ class IdChange(UserPassesTestMixin, View):
         text = request.POST.get('id')
         address = request.POST.get('address')
         user = request.POST.get('username')
-        print(text)
         if accept != None:
             profile = get_object_or_404(Profile, username=user)
             profile.akex_id = text
@@ -250,3 +248,17 @@ class PasswordChangeView(View):
         else:
             messages.info(request, 'Formani to`gri to`ldiring, iltimos!')
             return redirect('password_change', username)
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'users/password_reset_form.html'
+    email_template_name = 'users/password_reset_email.html'
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            messages.success(self.request,
+                             "Qo`llanma emailingizga jo`natildi!")
+            return super().form_valid(form)
+        messages.warning(self.request, f"Siz kiritgan '{email}' EMAIL orqali ro`yhatdan o`tilmagan!")
+        return redirect('login')

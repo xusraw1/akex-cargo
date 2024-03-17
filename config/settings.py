@@ -122,3 +122,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
+
+# EMAIL
+# EMAIL_BACKEND = 'django.core.mail.backend.smtp.EmailBackend'
+EMAIL_BACKEND = 'users.backends.email_backend.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'xusrav200329@gmail.com'
+EMAIL_HOST_PASSWORD = 'icyvbuzllspxjpoy'
+
+
+LOGIN_EXEMPT_URLS = [
+    '/password-reset/',
+    '/password-reset/done/',
+    '/password-reset/confirm/<uidb64>/<token>/',
+    '/password-reset/complete/',
+]
